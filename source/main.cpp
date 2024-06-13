@@ -47,12 +47,12 @@ public:
     ~GuiCheats() { }
 
     virtual tsl::elm::Element* createUI() override {
-        auto rootFrame = new tsl::elm::OverlayFrame("EdiZon", "Cheats");
+        auto rootFrame = new tsl::elm::OverlayFrame("EdiZon", "金手指管理器");
 
         if (edz::cheat::CheatManager::getCheats().size() == 0) {
             auto warning = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, u16 x, u16 y, u16 w, u16 h){
                 renderer->drawString("\uE150", false, 180, 250, 90, renderer->a(0xFFFF));
-                renderer->drawString("No Cheats loaded!", false, 110, 340, 25, renderer->a(0xFFFF));
+                renderer->drawString("無金手指被加載！", false, 110, 340, 25, renderer->a(0xFFFF));
             });
 
             rootFrame->setContent(warning);
@@ -62,7 +62,7 @@ public:
             std::string head = "Section: " + this->m_section;
 
             if(m_section.length() > 0) list->addItem(new tsl::elm::CategoryHeader(head));
-            else list->addItem(new tsl::elm::CategoryHeader("Available cheats"));
+            else list->addItem(new tsl::elm::CategoryHeader("可用的金手指"));
 
             bool skip = false, inSection = false, submenus = true;
             std::string skipUntil = "";
@@ -138,7 +138,7 @@ public:
             if(this->m_numCheats < 1){
                 auto warning = new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, u16 x, u16 y, u16 w, u16 h){
                     renderer->drawString("\uE150", false, 180, 250, 90, renderer->a(0xFFFF));
-                    renderer->drawString("No Cheats in Submenu!", false, 110, 340, 25, renderer->a(0xFFFF));
+                    renderer->drawString("子菜單沒有金手指！", false, 110, 340, 25, renderer->a(0xFFFF));
                 });
 
                 rootFrame->setContent(warning);
@@ -195,19 +195,19 @@ public:
      }
 
     virtual tsl::elm::Element* createUI() override {
-        auto rootFrame = new tsl::elm::OverlayFrame("EdiZon", "System Information");
+        auto rootFrame = new tsl::elm::OverlayFrame("EdiZon", "系統信息");
 
         auto infos = new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, u16 x, u16 y, u16 w, u16 h){
-            renderer->drawString("CPU Temparature:", false, 45, 160, 18, renderer->a(tsl::style::color::ColorText));
-            renderer->drawString("PCB Temparature:", false, 45, 190, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("CPU溫度:", false, 45, 160, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("主板溫度:", false, 45, 190, 18, renderer->a(tsl::style::color::ColorText));
 
             renderer->drawRect(x, 203, w, 1, renderer->a(tsl::style::color::ColorFrame));
-            renderer->drawString("CPU Clock:", false, 45, 230, 18, renderer->a(tsl::style::color::ColorText));
-            renderer->drawString("GPU Clock:", false, 45, 260, 18, renderer->a(tsl::style::color::ColorText));
-            renderer->drawString("MEM Clock:", false, 45, 290, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("CPU時鐘:", false, 45, 230, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("GPU時鐘:", false, 45, 260, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("內存時鐘:", false, 45, 290, 18, renderer->a(tsl::style::color::ColorText));
 
             renderer->drawRect(x, 303, w, 1, renderer->a(tsl::style::color::ColorFrame));
-            renderer->drawString("Local IP:", false, 45, 330, 18, renderer->a(tsl::style::color::ColorText));
+            renderer->drawString("本地IP:", false, 45, 330, 18, renderer->a(tsl::style::color::ColorText));
 
             float socTemperature = 0, pcbTemperature = 0;
             if(hosversionAtLeast(10,0,0)){
@@ -244,7 +244,7 @@ public:
             renderer->drawString(formatString("%.01f MHz", memClock / 1'000'000.0F).c_str(), false, 240, 290, 18, renderer->a(tsl::style::color::ColorHighlight));
 
             if (this->m_ipAddress == INADDR_LOOPBACK)
-                renderer->drawString("Offline", false, 240, 330, 18, renderer->a(tsl::style::color::ColorHighlight));
+                renderer->drawString("離線", false, 240, 330, 18, renderer->a(tsl::style::color::ColorHighlight));
             else 
                 renderer->drawString(this->m_ipAddressString.c_str(), false, 240, 330, 18, renderer->a(tsl::style::color::ColorHighlight));
 
@@ -253,29 +253,29 @@ public:
                 u32 wifiStrength;
                 NifmInternetConnectionStatus conStatus;
                 nifmGetInternetConnectionStatus(&conType, &wifiStrength, &conStatus);
-                renderer->drawString("Connection:", false, 45, 360, 18, renderer->a(tsl::style::color::ColorText));
+                renderer->drawString("連接:", false, 45, 360, 18, renderer->a(tsl::style::color::ColorText));
                 if(conStatus == NifmInternetConnectionStatus_Connected && conType == NifmInternetConnectionType_WiFi) {
-                    std::string wifiStrengthStr = "(Strong)";
+                    std::string wifiStrengthStr = "（強）";
                     tsl::Color color = tsl::Color(0x0, 0xF, 0x0, 0xF);
                     if(wifiStrength == 2){
-                        wifiStrengthStr = "(Fair)";
+                        wifiStrengthStr = "（一般）";
                         color = tsl::Color(0xE, 0xE, 0x2, 0xF);
                     } else if(wifiStrength <= 1){
-                        wifiStrengthStr = "(Poor)";
+                        wifiStrengthStr = "（弱）";
                         color = tsl::Color(0xF, 0x0, 0x0, 0xF);
                     }
                     renderer->drawString("WiFi", false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight));
                     renderer->drawString(wifiStrengthStr.c_str(), false, 285, 360, 18, renderer->a(color));
                 } else if(conStatus == NifmInternetConnectionStatus_Connected && conType == NifmInternetConnectionType_Ethernet){
-                    renderer->drawString("Ethernet", false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight));
+                    renderer->drawString("以太網", false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight));
                 } else {
-                    renderer->drawString("Disconnected", false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight));
+                    renderer->drawString("已斷開", false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight));
                 }
             } else {
                 s32 signalStrength = 0;
                 wlaninfGetRSSI(&signalStrength);
 
-                renderer->drawString("WiFi Signal:", false, 45, 360, 18, renderer->a(tsl::style::color::ColorText));
+                renderer->drawString("WiFi信號:", false, 45, 360, 18, renderer->a(tsl::style::color::ColorText));
                 renderer->drawString(formatString("%d dBm", signalStrength).c_str(), false, 240, 360, 18, renderer->a(tsl::style::color::ColorHighlight)); 
             }
         });
@@ -305,9 +305,9 @@ public:
             renderer->drawString("v1.0.8", false, 20, 70, 15, renderer->a(tsl::style::color::ColorDescription));
 
             if (edz::cheat::CheatManager::getProcessID() != 0) {
-                renderer->drawString("Program ID:", false, 150, 40, 15, renderer->a(tsl::style::color::ColorText));
-                renderer->drawString("Build ID:", false, 150, 60, 15, renderer->a(tsl::style::color::ColorText));
-                renderer->drawString("Process ID:", false, 150, 80, 15, renderer->a(tsl::style::color::ColorText));
+                renderer->drawString("程序ID：", false, 150, 40, 15, renderer->a(tsl::style::color::ColorText));
+                renderer->drawString("編譯ID：", false, 150, 60, 15, renderer->a(tsl::style::color::ColorText));
+                renderer->drawString("進程ID：", false, 150, 80, 15, renderer->a(tsl::style::color::ColorText));
                 renderer->drawString(GuiMain::s_runningTitleIDString.c_str(), false, 250, 40, 15, renderer->a(tsl::style::color::ColorHighlight));
                 renderer->drawString(GuiMain::s_runningBuildIDString.c_str(), false, 250, 60, 15, renderer->a(tsl::style::color::ColorHighlight));
                 renderer->drawString(GuiMain::s_runningProcessIDString.c_str(), false, 250, 80, 15, renderer->a(tsl::style::color::ColorHighlight));
@@ -317,7 +317,7 @@ public:
         auto list = new tsl::elm::List();
 
         if(edz::cheat::CheatManager::isCheatServiceAvailable()){
-            auto cheatsItem = new tsl::elm::ListItem("Cheats");
+            auto cheatsItem = new tsl::elm::ListItem("金手指");
             cheatsItem->setClickListener([](s64 keys) {
                 if (keys & HidNpadButton_A) {
                     tsl::changeTo<GuiCheats>("");
@@ -327,11 +327,11 @@ public:
             });
             list->addItem(cheatsItem);
         } else {
-            auto noDmntSvc = new tsl::elm::ListItem("Cheat Service Unavailable!");
+            auto noDmntSvc = new tsl::elm::ListItem("金手指服務不可用！");
             list->addItem(noDmntSvc);
         }
 
-        auto statsItem  = new tsl::elm::ListItem("System Information");
+        auto statsItem  = new tsl::elm::ListItem("系統信息");
         statsItem->setClickListener([](s64 keys) {
             if (keys & HidNpadButton_A) {
                 tsl::changeTo<GuiStats>();
